@@ -23,9 +23,11 @@ jobs:
         uses: martinbeentjes/npm-get-version-action@master
       - name: Tag based on version
         uses: actions/github-script@v5
+        env:
+          VERSION: ${{ steps.package-version.outputs.current-version }}
         with:
           script: |
-            const the_tag = 'refs/tags/v' + steps.package-version.outputs.current-version
+            const the_tag = 'refs/tags/v' + process.env.VERSION
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
