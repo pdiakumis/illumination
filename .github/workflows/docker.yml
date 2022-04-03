@@ -22,16 +22,14 @@ jobs:
         id: package-version
         uses: martinbeentjes/npm-get-version-action@master
       - name: Tag based on version
-        env: 
-          VERSION: ${{ steps.package-version.outputs.current-version}}
         uses: actions/github-script@v5
         with:
           script: |
-            const the_tag_name = 'refs/tags/v' + process.env.VERSION
+            const the_tag = 'refs/tags/v' + steps.package-version.outputs.current-version
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: the_tag_name,
+              ref: the_tag,
               sha: context.sha
             })
 
@@ -39,7 +37,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          ref: v${{ env.VERSION }}
+          ref: v${{ steps.package-version.outputs.current-version }}
       - name: Debug git log
         run: |
             git --no-pager log --decorate=short --pretty=oneline -n5
@@ -67,5 +65,7 @@ jobs:
           context: . # yes, dot
           platforms: linux/amd64,linux/arm64
           push: true
+          env:
+            VERSION: ${{ steps.package-version.outputs.current-version }}
           tags: |
             ghcr.io/${{ github.repository }}:${{ env.VERSION }}
