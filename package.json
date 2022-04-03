@@ -1,6 +1,6 @@
 {
   "name": "illumination",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Interacting with Illumina Stratus API",
   "main": "app.js",
   "scripts": {
